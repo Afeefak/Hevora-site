@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@layer utilities {
+  /* 1. THEME VARIABLES */
+  :root {
+    --bg-black: #050505;
+    --text-white: #ffffff;
+    --accent-lime: #ccff00;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-black);
+    color: var(--text-white);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* 2. UPDATED NOTCH CARD FOR TEXT CONTENT */
+  .notch-card {
+    position: relative;
+    /* Dark Glass Background */
+    background: rgba(20, 20, 20, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+
+    /* Layout for Title + Paragraph */
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem; /* Added padding for text breathing room */
+
+    color: white;
+    transition: all 0.3s ease;
+
+    /* The "Bite" on the top-left corner */
+    clip-path: polygon(0% 20px, 20px 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+
+  /* Hover Effect: Green Glow & Lift */
+  .notch-card:hover {
+    border-color: var(--accent-lime);
+    background: rgba(30, 30, 30, 0.95);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px -10px rgba(204, 255, 0, 0.15);
+  }
+
+  /* Hover effect specifically for the Title inside the card */
+  .notch-card:hover h3 {
+    color: var(--accent-lime);
+  }
+
+  /* 3. UTILITIES */
+  .menu-link-hover {
+    position: relative;
+    display: inline-block;
+    transition: color 0.3s ease;
+  }
+  .menu-link-hover::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--accent-lime);
+    transition: width 0.3s ease;
+  }
+  .menu-link-hover:hover::after {
+    width: 100%;
+  }
+
+  .input-field {
+    background: transparent;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: white;
+    padding: 1rem;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  .input-field:focus {
+    border-color: var(--accent-lime);
+  }
+
+  .fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .delay-100 {
+    animation-delay: 0.1s;
+  }
+  .delay-200 {
+    animation-delay: 0.2s;
+  }
+  .delay-300 {
+    animation-delay: 0.3s;
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
