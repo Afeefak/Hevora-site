@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import {
   ArrowDown,
@@ -12,7 +12,64 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-// --- 1. TEXAS PROJECT SLIDESHOW COMPONENT ---
+// --- FIXED HELPER: ANIMATED COUNTER ---
+const StatsCounter = ({ end, title }: { end: number; title: string }) => {
+  const [count, setCount] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // 1. Observer Hook: Detects scroll & Resets count
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
+          setCount(0); // <--- FIX: Reset count here instead of in the animation effect
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // 2. Animation Hook: Only handles counting up
+  useEffect(() => {
+    if (isVisible) {
+      let start = 0;
+      const duration = 2000;
+      const increment = end / (duration / 16);
+
+      const timer = setInterval(() => {
+        start += increment;
+        if (start >= end) {
+          setCount(end);
+          clearInterval(timer);
+        } else {
+          setCount(Math.ceil(start));
+        }
+      }, 16);
+
+      return () => clearInterval(timer);
+    }
+  }, [isVisible, end]);
+
+  return (
+    <div ref={ref} className="text-center p-6 fade-in-up">
+      <div className="text-6xl md:text-8xl font-bold text-white mb-4">
+        {count}
+        <span className="text-[#ccff00]">+</span>
+      </div>
+      <p className="text-gray-400 text-sm md:text-base uppercase tracking-widest font-medium">
+        {title}
+      </p>
+    </div>
+  );
+};
+
+// --- 1. PROJECT 1: TEXAS TRAVEL ---
 const TexasCard = () => {
   const images = [
     "/Screenshot 2025-12-16 122413.png",
@@ -36,7 +93,6 @@ const TexasCard = () => {
       id="work-texas"
       className="group relative overflow-hidden rounded-2xl bg-[#111] border border-white/10 hover:border-[#ccff00] transition-all duration-500 shadow-2xl shadow-black/50"
     >
-      {/* ASPECT-VIDEO fixes the mobile height issue */}
       <div className="aspect-video w-full relative overflow-hidden bg-[#050505]">
         {images.map((img, index) => (
           <img
@@ -51,17 +107,6 @@ const TexasCard = () => {
           />
         ))}
         <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-transparent to-transparent opacity-60"></div>
-
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
-          {images.map((_, idx) => (
-            <div
-              key={idx}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                idx === currentIndex ? "bg-[#ccff00]" : "bg-white/30"
-              }`}
-            ></div>
-          ))}
-        </div>
         <div className="absolute top-4 right-4 bg-[#ccff00] text-black text-[10px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1 rounded-full uppercase tracking-wide z-10 shadow-lg">
           Featured
         </div>
@@ -99,7 +144,78 @@ const TexasCard = () => {
   );
 };
 
-// --- 2. MAIN PAGE COMPONENT ---
+// --- 2. PROJECT 2: RENT HOUSE ---
+const RentHouseCard = () => {
+  const images = [
+    "/WhatsApp Image 2025-12-17 at 19.41.52_f412bb1b.jpg",
+    "/WhatsApp Image 2025-12-17 at 19.41.51_98bff560.jpg",
+    "/WhatsApp Image 2025-12-17 at 19.41.51_397a2299.jpg",
+    "/WhatsApp Image 2025-12-17 at 19.41.50_0724ffdd.jpg",
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  return (
+    <div className="group relative overflow-hidden rounded-2xl bg-[#111] border border-white/10 hover:border-[#ccff00] transition-all duration-500 shadow-2xl shadow-black/50">
+      <div className="aspect-video w-full relative overflow-hidden bg-[#1a1a1a] flex items-center justify-center">
+        {images.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt={`RentHouse App Slide ${index + 1}`}
+            className={`absolute h-full w-auto object-contain transition-all duration-1000 ease-in-out ${
+              index === currentIndex
+                ? "opacity-100 scale-100 blur-0"
+                : "opacity-0 scale-95 blur-sm"
+            }`}
+          />
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-transparent to-transparent opacity-40"></div>
+        <div className="absolute top-4 right-4 bg-[#ccff00] text-black text-[10px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1 rounded-full uppercase tracking-wide z-10 shadow-lg">
+          Mobile App
+        </div>
+      </div>
+
+      <div className="p-6 md:p-8 relative">
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <h3 className="text-2xl md:text-3xl font-bold group-hover:text-[#ccff00] transition-colors mb-1">
+              RentHouse
+            </h3>
+            <p className="text-[10px] md:text-xs text-gray-500 uppercase tracking-widest">
+              App Development
+            </p>
+          </div>
+          <ExternalLink className="w-5 h-5 md:w-6 md:h-6 text-gray-500 group-hover:text-white transition-colors" />
+        </div>
+        <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+          A peer-to-peer rental marketplace app featuring{" "}
+          <strong>User KYC</strong>, real-time{" "}
+          <strong>Booking Management</strong>, and secure item listings.
+        </p>
+        <div className="flex gap-2 md:gap-3 flex-wrap">
+          {["React Native", "Node.js", "Firebase"].map((tag) => (
+            <span
+              key={tag}
+              className="px-2 py-1 md:px-3 md:py-1 text-[10px] md:text-xs font-bold uppercase tracking-wider border border-white/20 rounded-full text-gray-400 group-hover:border-[#ccff00] group-hover:text-[#ccff00] transition-colors"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- 3. MAIN PAGE COMPONENT ---
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -138,7 +254,6 @@ export default function Home() {
             Welcome to J. Robins, where we redefine cloud-based software
             solutions.
           </p>
-          {/* RESPONSIVE FONT SIZE FIX */}
           <h1 className="text-5xl md:text-9xl font-bold tracking-tighter text-white">
             Innovative <br className="md:hidden" /> Solutions
           </h1>
@@ -191,6 +306,15 @@ export default function Home() {
               Learn More <ArrowRight size={16} />
             </button>
           </div>
+        </div>
+      </section>
+
+      {/* --- COUNTING / STATS SECTION --- */}
+      <section className="bg-[#0a0a0a] border-y border-white/5 py-20">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 items-center justify-center">
+          <StatsCounter end={5} title="Years of Cumulative Experience" />
+          <StatsCounter end={4} title="Satisfied Clients" />
+          <StatsCounter end={7} title="Projects Delivered" />
         </div>
       </section>
 
@@ -281,52 +405,8 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 md:gap-10">
-            {/* 1. TEXAS CARD */}
             <TexasCard />
-
-            {/* Other Projects */}
-            {[
-              {
-                title: "FinTech Dashboard",
-                desc: "A high-performance financial analytics platform.",
-                img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
-              },
-              {
-                title: "Urban Estate",
-                desc: "Property listing app with virtual tours.",
-                img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=1973&auto=format&fit=crop",
-              },
-              {
-                title: "MediCare Portal",
-                desc: "Secure patient management system.",
-                img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop",
-              },
-            ].map((project, idx) => (
-              <div
-                key={idx}
-                className="group relative overflow-hidden rounded-2xl bg-[#111] border border-white/10 hover:border-[#ccff00]/50 transition-all duration-500"
-              >
-                <div className="h-48 md:h-72 overflow-hidden relative">
-                  <img
-                    src={project.img}
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-100"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#111] to-transparent"></div>
-                </div>
-                <div className="p-6 md:p-8 relative">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl md:text-2xl font-bold group-hover:text-[#ccff00] transition-colors">
-                      {project.title}
-                    </h3>
-                    <ExternalLink className="w-5 h-5 md:w-6 md:h-6 text-gray-500 group-hover:text-white transition-colors" />
-                  </div>
-                  <p className="text-gray-400 text-xs md:text-sm mb-4 md:mb-6 leading-relaxed">
-                    {project.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
+            <RentHouseCard />
           </div>
         </div>
       </section>
@@ -362,15 +442,20 @@ export default function Home() {
                   <Phone size={16} /> +91 90370 94071
                 </a>
               </div>
+
               <div className="flex gap-4">
                 <a
-                  href="#"
+                  href="https://www.instagram.com/hevoratechnologies?igsh=MXJyaHRnMTV4dWxjMA=="
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-2 bg-white text-black rounded hover:bg-[#ccff00] transition"
                 >
                   <Instagram size={20} />
                 </a>
                 <a
-                  href="#"
+                  href="https://www.linkedin.com/in/hevora-technologies-605196390/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-2 bg-white text-black rounded hover:bg-[#ccff00] transition"
                 >
                   <Linkedin size={20} />
