@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
-import { Outfit } from "next/font/google";
+// CHANGE: Importing 'Space_Grotesk' for the modern, geometric look seen in your images
+import { Space_Grotesk } from "next/font/google";
 import {
   ArrowDown,
   Phone,
@@ -9,12 +10,14 @@ import {
   ArrowRight,
   CheckCircle,
   ExternalLink,
+  X,
 } from "lucide-react";
 
-// --- CONFIG: PREMIUM FONT ---
-const font = Outfit({
+// --- CONFIG: MODERN GEOMETRIC FONT ---
+// Space Grotesk matches the wide, sharp, "tech-forward" aesthetic
+const font = Space_Grotesk({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -426,6 +429,7 @@ const CarShowroomCard = () => {
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLearnMoreOpen, setIsLearnMoreOpen] = useState(false); // State for the Learn More Modal
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -465,11 +469,11 @@ export default function Home() {
         <div className="absolute inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40" />
         <div className="z-10 text-center px-4 max-w-5xl mt-[-50px] md:mt-[-100px]">
           <p className="text-[10px] md:text-sm mb-4 md:mb-6 text-gray-300 font-light tracking-wide uppercase">
-            Welcome to J. Robins, where we redefine cloud-based software
-            solutions.
+            Welcome to Hevora technologies, where we redefine software solutions
+            for small to medium-sized enterprises solutions.
           </p>
           <h1 className="text-5xl md:text-9xl font-bold tracking-tighter text-white">
-            <TypewriterText text="Innovative Solutions" />
+            <TypewriterText text="Accelerate Your Growth" />
           </h1>
         </div>
         <div className="absolute bottom-24 md:bottom-40 z-20 flex flex-col items-center gap-4 animate-bounce">
@@ -517,7 +521,12 @@ export default function Home() {
                 software solutions. Our focus on user-friendly interfaces
                 ensures you achieve your business goals efficiently.
               </p>
-              <button className="flex items-center gap-3 border-2 border-black px-6 py-3 md:px-8 md:py-3 uppercase text-[10px] md:text-xs font-bold tracking-widest hover:bg-black hover:text-[#ccff00] transition-all">
+
+              {/* UPDATED: Open Modal on Click */}
+              <button
+                onClick={() => setIsLearnMoreOpen(true)}
+                className="flex items-center gap-3 border-2 border-black px-6 py-3 md:px-8 md:py-3 uppercase text-[10px] md:text-xs font-bold tracking-widest hover:bg-black hover:text-[#ccff00] transition-all"
+              >
                 Learn More <ArrowRight size={16} />
               </button>
             </div>
@@ -529,9 +538,9 @@ export default function Home() {
       <section className="bg-[#0a0a0a] border-y border-white/5 py-20">
         <RevealSection>
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 items-center justify-center">
-            <StatsCounter end={5} title="Years of Cumulative Experience" />
-            <StatsCounter end={4} title="Satisfied Clients" />
-            <StatsCounter end={7} title="Projects Delivered" />
+            <StatsCounter end={2} title="Years of Cumulative Experience" />
+            <StatsCounter end={6} title="Satisfied Clients" />
+            <StatsCounter end={10} title="Projects Delivered" />
           </div>
         </RevealSection>
       </section>
@@ -539,7 +548,7 @@ export default function Home() {
       {/* SERVICES SECTION */}
       <section
         id="services"
-        className="bg-black text-white py-20 md:py-32 px-6 relative z-20"
+        className="bg-black text-white pt-20 pb-10 md:pt-32 md:pb-16 px-6 relative z-20"
       >
         <RevealSection>
           <div className="max-w-6xl mx-auto text-center">
@@ -607,7 +616,7 @@ export default function Home() {
                 <br />
                 Online Presence <span className="text-[#ccff00]">Strong</span>
               </h3>
-              <p className="text-lg md:text-2xl font-light text-gray-400 mb-16">
+              <p className="text-lg md:text-2xl font-light text-gray-400 mb-8">
                 With HevoraTechnologies
               </p>
             </div>
@@ -618,11 +627,11 @@ export default function Home() {
       {/* WORKS SECTION */}
       <section
         id="works"
-        className="bg-[#050505] text-white py-20 md:py-32 px-6 border-t border-white/5"
+        className="bg-[#050505] text-white pt-10 pb-20 md:pt-16 md:pb-32 px-6 border-t border-white/5"
       >
         <RevealSection>
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-20">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12">
               <div>
                 <h2 className="text-4xl md:text-7xl font-bold mb-4">
                   Our Work
@@ -666,7 +675,7 @@ export default function Home() {
                     href="tel:+917907737628"
                     className="flex items-center gap-2 hover:text-[#ccff00] transition"
                   >
-                    <Phone size={16} /> +91 7907737628
+                    <Phone size={16} /> +91 79077 37628
                   </a>
                   <a
                     href="tel:+919037094071"
@@ -676,7 +685,6 @@ export default function Home() {
                   </a>
                 </div>
 
-                {/* UPDATED SOCIAL ICONS */}
                 <div className="flex gap-4">
                   <a
                     href="https://www.instagram.com/hevoratechnologies?igsh=MXJyaHRnMTV4dWxjMA=="
@@ -778,6 +786,64 @@ export default function Home() {
           </div>
         </RevealSection>
       </section>
+
+      {/* --- VISION MODAL (UPDATED WITH DARK & NEON THEME) --- */}
+      {isLearnMoreOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 fade-in">
+          {/* Updated: Dark Gradient Background + Neon Border */}
+          <div className="w-full max-w-6xl bg-gradient-to-br from-[#1a1a1a] to-black text-white rounded-[2rem] p-8 md:p-16 relative overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300 border border-[#ccff00]/20">
+            {/* Updated: Close Button with Neon Hover */}
+            <button
+              onClick={() => setIsLearnMoreOpen(false)}
+              className="absolute top-6 right-6 md:top-8 md:right-8 bg-white/10 hover:bg-[#ccff00]/20 p-2 rounded-full transition-colors group"
+            >
+              <X className="w-6 h-6 md:w-8 md:h-8 text-white group-hover:text-[#ccff00] transition-colors" />
+            </button>
+
+            {/* Content Grid */}
+            <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center h-full">
+              {/* Left Side: Big Text */}
+              <h2 className="text-4xl md:text-7xl font-bold tracking-tighter leading-[1.1] md:leading-[0.9]">
+                The Benchmark of Digital Craft.
+              </h2>
+
+              {/* Right Side: Stats & Description */}
+              <div className="space-y-8 md:space-y-12">
+                <div className="flex gap-10 md:gap-16">
+                  <div>
+                    {/* Updated: Neon Stat Number */}
+                    <span className="text-4xl md:text-6xl font-bold block mb-1 text-[#ccff00]">
+                      98%
+                    </span>
+                    <span className="text-xs md:text-sm uppercase tracking-widest font-semibold opacity-70 text-gray-400">
+                      Client Satisfaction
+                    </span>
+                  </div>
+                  <div>
+                    {/* Updated: Neon Stat Number */}
+                    <span className="text-4xl md:text-6xl font-bold block mb-1 text-[#ccff00]">
+                      10+
+                    </span>
+                    <span className="text-xs md:text-sm uppercase tracking-widest font-semibold opacity-70 text-gray-400">
+                      Projects Delivered
+                    </span>
+                  </div>
+                </div>
+
+                {/* Updated: Neon Divider Line */}
+                <div className="w-full h-px bg-[#ccff00]/30"></div>
+
+                <p className="text-lg md:text-2xl leading-relaxed font-light text-gray-300">
+                  To empower brands with innovative, strategic, and
+                  unforgettable software solutions that leave a lasting mark on
+                  the world.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <footer className="bg-black text-center text-gray-500 py-6 md:py-8 text-xs md:text-sm border-t border-white/5">
         &copy; 2025 Hevora Technologies. All rights reserved.
       </footer>
